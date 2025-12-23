@@ -1,3 +1,13 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using System.CommandLine;
+using AdventOfCode;
+using AdventOfCode.Commands;
 
-Console.WriteLine("Hello Advent of Code World!");
+var settings = Settings.LoadSettingsFile();
+
+var rootCommand = new RootCommand("Advent of Code CLI")
+{
+    new SettingsCommand()
+};
+
+var parseResult = rootCommand.Parse(args);
+return await parseResult.InvokeAsync();
