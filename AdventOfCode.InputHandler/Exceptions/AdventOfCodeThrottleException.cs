@@ -1,5 +1,8 @@
 namespace AdventOfCode.InputHandler.Exceptions;
 
+/// <summary>
+/// Represents errors that occurs when requests are made to frequent to Advent of Code
+/// </summary>
 public class AdventOfCodeThrottleException(RequestInfo? lastRequest)
     : AdventOfCodeException(
         $"""
@@ -7,6 +10,4 @@ public class AdventOfCodeThrottleException(RequestInfo? lastRequest)
          See: https://old.reddit.com/r/adventofcode/wiki/faqs/automation#wiki_throttle_your_outbound_requests
          Next allowed request at UTC {lastRequest?.NextRequestAllowedAt ?? DateTime.UtcNow.AddSeconds(AdventOfCodeClient.RequestThrottleSeconds)}.
          Use {nameof(AdventOfCodeClient)}.{nameof(AdventOfCodeClient.CanMakeRequest)}() to know if request is allowed.
-         """)
-{
-}
+         """);
