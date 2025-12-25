@@ -6,7 +6,7 @@ namespace AdventOfCode.Commands;
 
 public partial class SettingsCommand : Command
 {
-    private static readonly List<PropertyInfo> _settingsProperties = typeof(Settings).GetProperties().ToList();
+    private static readonly List<PropertyInfo> SettingsProperties = typeof(Settings).GetProperties().ToList();
 
     public SettingsCommand() : base("settings", "Manage Advent of Code settings")
     {
@@ -19,7 +19,7 @@ public partial class SettingsCommand : Command
         });
 
         var setCommand = new Command("set", "Sets the given settings");
-        var setOptions = _settingsProperties.Select(property =>
+        var setOptions = SettingsProperties.Select(property =>
                 new Option<string>($"--{PascalToKebabCase(property.Name)}")
                 {
                     HelpName = property.Name,
@@ -42,7 +42,7 @@ public partial class SettingsCommand : Command
             }
 
             var currentSettings = Settings.LoadSettingsFile();
-            _settingsProperties.ForEach(property =>
+            SettingsProperties.ForEach(property =>
             {
                 var value = optionValues[property.Name];
                 if (!string.IsNullOrWhiteSpace(value))
@@ -59,7 +59,7 @@ public partial class SettingsCommand : Command
         Add(setCommand);
     }
 
-    private static void ListSettings(Settings settings) => _settingsProperties.ForEach(property =>
+    private static void ListSettings(Settings settings) => SettingsProperties.ForEach(property =>
         Console.WriteLine($"  {property.Name}: '{property.GetValue(settings)}'"));
 
     [GeneratedRegex(@"([a-z0-9])([A-Z])")]
