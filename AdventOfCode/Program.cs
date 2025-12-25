@@ -10,6 +10,7 @@ var rootCommand = new RootCommand("Advent of Code CLI")
 {
     new SettingsCommand(),
     new CacheCommand(inputCache),
+    new SolveCommand(inputCache),
 };
 
 var parseResult = rootCommand.Parse(args);

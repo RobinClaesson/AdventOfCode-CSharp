@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AdventOfCode.InputHandler\AdventOfCode.InputHandler.csproj" />
+      <ProjectReference Include="..\AdventOfCode.Solutions\AdventOfCode.Solutions.csproj" />
     </ItemGroup>
 
 </Project>
