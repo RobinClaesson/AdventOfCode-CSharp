@@ -12,5 +12,5 @@ public class FileInputCache(string directoryPath) : IInputCache
     public void CacheInput(int year, int day, string input) => File.WriteAllText(FilePath(year, day), input);
     public Task CacheInputAsync(int year, int day, string input) => File.WriteAllTextAsync(FilePath(year, day), input);
 
-    public string FilePath(int year, int day) => Path.Combine(DirectoryPath, $"{year}-{day,2}.txt");
+    public string FilePath(int year, int day) => Path.Combine(DirectoryPath, $"{year}-{day:D2}.txt");
 }
