@@ -23,16 +23,16 @@ public partial class SettingsCommand : Command
         var setCommand = new Command("set", "Sets the given settings");
         SetOptions.ForEach(setCommand.Add);
         setCommand.SetAction(SetOptionsAction);
-        
+
         Add(listCommand);
         Add(setCommand);
     }
 
     private static void ListOptionsAction()
     {
-        var settings = Settings.LoadSettingsFile();
+        var currentSettings = Settings.GetSettings();
         Console.WriteLine("Settings:");
-        ListSettings(settings);
+        ListSettings(currentSettings);
     }
 
     private void SetOptionsAction(ParseResult parseResult)
@@ -45,11 +45,12 @@ public partial class SettingsCommand : Command
         if (optionValues.Values.All(string.IsNullOrWhiteSpace))
         {
             Console.WriteLine("No new settings provided. Too see options, run: ");
-            Console.WriteLine($"{AppDomain.CurrentDomain.FriendlyName} {Name} {parseResult.CommandResult.Command.Name} -h");
+            Console.WriteLine(
+                $"{AppDomain.CurrentDomain.FriendlyName} {Name} {parseResult.CommandResult.Command.Name} -h");
             return;
         }
 
-        var currentSettings = Settings.LoadSettingsFile();
+        var currentSettings = Settings.GetSettings();
         SettingsProperties.ForEach(property =>
         {
             var value = optionValues[property.Name];

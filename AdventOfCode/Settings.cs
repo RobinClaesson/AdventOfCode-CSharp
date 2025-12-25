@@ -4,15 +4,23 @@ namespace AdventOfCode;
 
 public class Settings
 {
+    //Left public for JSON serialization
+    public Settings()
+    {
+    }
+
     private const string SettingsFileName = "settings.json";
-    
+    private static Settings _settings = LoadSettingsFile();
+
     public string InputCachePath { get; set; } = ".";
     public string SessionToken { get; set; } = string.Empty;
     public string Contact { get; set; } = string.Empty;
 
     public void Save() => File.WriteAllText(SettingsFileName, JsonSerializer.Serialize(this));
 
-    public static Settings LoadSettingsFile()
+    public static Settings GetSettings() => _settings;
+
+    private static Settings LoadSettingsFile()
     {
         if (!File.Exists(SettingsFileName))
         {
