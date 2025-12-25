@@ -8,8 +8,8 @@ var inputCache = new FileInputCache(settings.InputCachePath);
 
 var rootCommand = new RootCommand("Advent of Code CLI")
 {
-    new CacheCommand(inputCache),
     new SettingsCommand(),
+    new CacheCommand(inputCache),
 };
 
 var parseResult = rootCommand.Parse(args);

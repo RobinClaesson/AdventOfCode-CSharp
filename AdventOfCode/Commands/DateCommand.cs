@@ -19,4 +19,7 @@ public class DateCommand : Command
         Add(YearArgument);
         Add(DayArgument);
     }
+    
+    public int GetParsedYear(ParseResult parseResult) => parseResult.GetValue(YearArgument);
+    public int GetParsedDay(ParseResult parseResult) => parseResult.GetValue(DayArgument);
 }
