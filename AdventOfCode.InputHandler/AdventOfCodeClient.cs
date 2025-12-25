@@ -35,7 +35,7 @@ public class AdventOfCodeClient(IInputCache inputCache, string sessionToken, str
         using var httpClient = new HttpClient(handler);
         httpClient.DefaultRequestHeaders.Add("user-agent", userAgent);
 
-        LogLastRequest(endpoint.ToString());
+        SaveLastRequest(endpoint.ToString());
         var response = await httpClient.GetAsync(endpoint);
 
         if (!response.IsSuccessStatusCode)
@@ -51,7 +51,7 @@ public class AdventOfCodeClient(IInputCache inputCache, string sessionToken, str
         return input;
     }
 
-    private void LogLastRequest(string endPoint)
+    private void SaveLastRequest(string endPoint)
     {
         var requestInfo = new RequestInfo
         {
