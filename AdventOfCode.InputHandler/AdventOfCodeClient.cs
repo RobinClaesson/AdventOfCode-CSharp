@@ -1,10 +1,11 @@
 using System.Net;
 using System.Text.Json;
 using AdventOfCode.InputHandler.Cache;
+using AdventOfCode.InputHandler.Exceptions;
 
 namespace AdventOfCode.InputHandler;
 
-public class AdventOfCodeClient(IInputCache cache, string sessionToken, string contact)
+public class AdventOfCodeClient(IInputCache inputCache, string sessionToken, string contact)
 {
     public const string BaseUrl = "https://adventofcode.com";
     public const int RequestThrottleSeconds = 900;
@@ -12,7 +13,7 @@ public class AdventOfCodeClient(IInputCache cache, string sessionToken, string c
     private const string LastRequestFileName = "LastRequest.json";
     private static readonly Uri BaseUri = new(BaseUrl);
 
-    public IInputCache Cache => cache;
+    public IInputCache Cache => inputCache;
     public string SessionToken => sessionToken;
     public string Contact => contact;
 
@@ -21,17 +22,7 @@ public class AdventOfCodeClient(IInputCache cache, string sessionToken, string c
         if (Cache.HasInput(year, day) && !force)
             return await Cache.GetInputAsync(year, day);
 
-        if (!CanMakeRequest())
-        {
-            var lastRequest = GetLastRequest();
-            throw new HttpRequestException(
-                @$"Input can only fetched from Advent of Code every {RequestThrottleSeconds} seconds.
-Next allowed request at UTC {lastRequest!.NextRequestAllowedAt}.
-Use {nameof(AdventOfCodeClient)}.{nameof(CanMakeRequest)}() to know if request is allowed.",
-                null,
-                HttpStatusCode.TooManyRequests
-            );
-        }
+        ThrottleCheck();
 
         var endpoint = new Uri(BaseUri, $"{year}/day/{day}/input");
         var userAgent =
@@ -71,6 +62,12 @@ Use {nameof(AdventOfCodeClient)}.{nameof(CanMakeRequest)}() to know if request i
 
         var json = JsonSerializer.Serialize(requestInfo);
         File.WriteAllText(LastRequestFileName, json);
+    }
+
+    private static void ThrottleCheck()
+    {
+        if (CanMakeRequest()) return;
+        throw new AdventOfCodeThrottleException(GetLastRequest());
     }
 
     public static bool CanMakeRequest()
