@@ -83,6 +83,7 @@ public class AdventOfCodeClient(IInputCache inputCache, string sessionToken, str
         }
 
         var input = await response.Content.ReadAsStringAsync();
+        input = input.Trim();
         await Cache.CacheInputAsync(year, day, input);
         return input;
     }
