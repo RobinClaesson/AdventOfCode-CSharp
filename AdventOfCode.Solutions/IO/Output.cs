@@ -1,6 +1,9 @@
 namespace AdventOfCode.Solutions.IO;
 
-internal class Output
+/// <summary>
+/// Helper functions to format solution outputs
+/// </summary>
+internal static class Output
 {
     private static int _outputs = 0;
 
