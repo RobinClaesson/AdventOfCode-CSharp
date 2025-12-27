@@ -9,9 +9,15 @@ public class SolveCommand : DateCommand
 {
     private readonly IInputCache _inputCache;
 
+    private readonly Option<string> _inputFileOption = new("--input")
+    {
+        Description = "Specify input file"
+    };
+
     public SolveCommand(IInputCache inputCache) : base("solve", "Solve an Advent of Code puzzle")
     {
         _inputCache = inputCache;
+        Add(_inputFileOption);
         SetAction(SolveAction);
     }
 
@@ -26,11 +32,20 @@ public class SolveCommand : DateCommand
             return;
         }
 
-        var settings = Settings.GetSettings();
-        var aocClient = new AdventOfCodeClient(_inputCache, settings.SessionToken, settings.Contact);
-        var input = await aocClient.GetInputAsync(year, day);
-        
+        var input = await GetInput(parseResult, year, day);
         var solution = SolutionProvider.GetSolution(year, day);
         solution?.Run(input);
+    }
+
+    private async Task<string> GetInput(ParseResult parseResult, int year, int day)
+    {
+        if (parseResult.GetValue(_inputFileOption) is { } inputFilePath)
+        {
+            return await File.ReadAllTextAsync(inputFilePath);
+        }
+
+        var settings = Settings.GetSettings();
+        var aocClient = new AdventOfCodeClient(_inputCache, settings.SessionToken, settings.Contact);
+        return await aocClient.GetInputAsync(year, day);
     }
 }
