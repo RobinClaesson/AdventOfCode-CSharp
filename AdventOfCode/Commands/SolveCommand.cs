@@ -9,7 +9,7 @@ public class SolveCommand : DateCommand
 {
     private readonly IInputCache _inputCache;
 
-    private readonly Option<string> _inputFileOption = new("--input")
+    private readonly Option<string> _inputFileOption = new("--input", "-i")
     {
         Description = "Specify input file"
     };
