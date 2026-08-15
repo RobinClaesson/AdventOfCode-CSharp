@@ -2,6 +2,7 @@ namespace AdventOfCode.Solutions.Extensions;
 
 public static class ListExtensions
 {
+    public static List<List<T>> Permutations<T>(this IEnumerable<T> enumerable) => enumerable.ToList().Permutations();
     public static List<List<T>> Permutations<T>(this List<T> list)
     {
         return list.Count switch
