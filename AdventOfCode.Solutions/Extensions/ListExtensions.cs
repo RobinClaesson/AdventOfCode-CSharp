@@ -2,20 +2,37 @@ namespace AdventOfCode.Solutions.Extensions;
 
 public static class ListExtensions
 {
-    public static List<List<T>> Permutations<T>(this IEnumerable<T> enumerable) => enumerable.ToList().Permutations();
-    public static List<List<T>> Permutations<T>(this List<T> list)
+    extension<T>(List<T> list)
     {
-        return list.Count switch
+        public List<List<T>> Permutations()
         {
-            < 2 => [list],
-            2 => [[list[0], list[1]], [list[1], list[0]]],
-            > 2 => list.SelectMany(t =>
-                {
-                    var subPaths = list.Except([t]).ToList().Permutations();
-                    subPaths.ForEach(p => p.Insert(0, t));
-                    return subPaths;
-                })
-                .ToList()
-        };
+            return list.Count switch
+            {
+                < 2 => [list],
+                2 => [[list[0], list[1]], [list[1], list[0]]],
+                > 2 => list.SelectMany(t =>
+                    {
+                        var subPaths = list.Except([t]).ToList().Permutations();
+                        subPaths.ForEach(p => p.Insert(0, t));
+                        return subPaths;
+                    })
+                    .ToList()
+            };
+        }
+
+        public List<List<T>> Subsets() => Enumerable.Range(1, (int)Math.Pow(2, list.Count) - 1)
+            .Select(n => Convert.ToString(n, 2)
+                .PadLeft(list.Count, '0')
+                .Select((c, i) => (Char: c, Index: i))
+                .Where(x => x.Char == '1')
+                .Select(x => list[x.Index])
+                .ToList())
+            .ToList();
+    }
+
+    extension<T>(IEnumerable<T> source)
+    {
+        public List<List<T>> Permutations() => source.ToList().Permutations();
+        public List<List<T>> Subsets() => source.ToList().Subsets();
     }
 }
