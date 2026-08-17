@@ -27,5 +27,14 @@ public static class PointExtensions
             Direction.Left => point with { X = point.X - steps },
             _ => point
         };
+
+        public Point Step(char direction, int steps = 1) => direction switch
+        {
+            'U' or 'u' => point with { Y = point.Y - steps },
+            'R' or 'r' => point with { X = point.X + steps },
+            'D' or 'd' => point with { Y = point.Y + steps },
+            'L' or 'l' => point with { X = point.X - steps },
+            _ => point
+        };
     }
 }
