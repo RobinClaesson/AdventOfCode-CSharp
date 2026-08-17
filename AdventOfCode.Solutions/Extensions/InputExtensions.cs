@@ -34,6 +34,16 @@ public static class InputExtensions
             .Rows()
             .Select(int.Parse)
             .ToList();
+        
+        /// <summary>
+        /// Split input by <see cref="Environment.NewLine"/> then parse each row as int
+        /// <code>"123\n456\n789" => [123, 456, 789]</code>
+        /// </summary>
+        /// <returns>List of all rows in the input as int</returns>
+        public List<long> RowsAsLong() => input
+            .Rows()
+            .Select(long.Parse)
+            .ToList();
 
         /// <summary>
         /// Split input by <see cref="Environment.NewLine"/> then get all individual numbers in each row

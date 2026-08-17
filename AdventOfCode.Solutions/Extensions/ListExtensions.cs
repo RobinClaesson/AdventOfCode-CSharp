@@ -20,10 +20,11 @@ public static class ListExtensions
             };
         }
 
-        public List<List<T>> Subsets() => Enumerable.Range(1, (int)Math.Pow(2, list.Count) - 1)
+        public List<List<T>> Subsets(int? maxSize = null) => Enumerable.Range(1, (int)Math.Pow(2, list.Count) - 1)
             .Select(n => Convert.ToString(n, 2)
-                .PadLeft(list.Count, '0')
-                .Select((c, i) => (Char: c, Index: i))
+                .PadLeft(list.Count, '0'))
+            .Where(s => !maxSize.HasValue || s.Count('1') <= maxSize.Value)
+            .Select(s => s.Select((c, i) => (Char: c, Index: i))
                 .Where(x => x.Char == '1')
                 .Select(x => list[x.Index])
                 .ToList())
@@ -33,6 +34,9 @@ public static class ListExtensions
     extension<T>(IEnumerable<T> source)
     {
         public List<List<T>> Permutations() => source.ToList().Permutations();
-        public List<List<T>> Subsets() => source.ToList().Subsets();
+        public List<List<T>> Subsets(int? maxSize = null) => source.ToList().Subsets(maxSize);
     }
+
+    public static int Product(this List<int> list) => list.Aggregate(1, (acc, x) => acc * x);
+    public static long Product(this List<long> list) => list.Aggregate(1L, (acc, x) => acc * x);
 }
