@@ -39,4 +39,6 @@ public static class ListExtensions
 
     public static int Product(this List<int> list) => list.Aggregate(1, (acc, x) => acc * x);
     public static long Product(this List<long> list) => list.Aggregate(1L, (acc, x) => acc * x);
+    
+    public static string JoinChars(this IEnumerable<char> list) => string.Join(string.Empty, list);
 }
