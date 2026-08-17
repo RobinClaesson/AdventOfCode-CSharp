@@ -1,4 +1,5 @@
 using System.Drawing;
+using AdventOfCode.Solutions.Navigation;
 
 namespace AdventOfCode.Solutions.Extensions;
 
@@ -17,5 +18,14 @@ public static class PointExtensions
             new(point.X - 1, point.Y),
             new(point.X - 1, point.Y - 1),
         ];
+
+        public Point Step(Direction direction, int steps = 1) => direction switch
+        {
+            Direction.Up => point with { Y = point.Y - steps },
+            Direction.Right => point with { X = point.X + steps },
+            Direction.Down => point with { Y = point.Y + steps },
+            Direction.Left => point with { X = point.X - steps },
+            _ => point
+        };
     }
 }
