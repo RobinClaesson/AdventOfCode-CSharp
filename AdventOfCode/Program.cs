@@ -11,6 +11,7 @@ var rootCommand = new RootCommand("Advent of Code CLI")
     new SettingsCommand(),
     new CacheCommand(inputCache),
     new SolveCommand(inputCache),
+    new PrintCommand()
 };
 
 var parseResult = rootCommand.Parse(args);

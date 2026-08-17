@@ -15,6 +15,11 @@ public static class SolutionProvider
         type.GetCustomAttribute<AdventOfCodeSolutionAttribute>() is { } solutionAttribute
         && solutionAttribute.Year == year && solutionAttribute.Day == day;
 
+    private static int GetStarsForPuzzle(Type type, int year, int day) =>
+        type.GetCustomAttribute<AdventOfCodeSolutionAttribute>() is { } solutionAttribute
+            ? solutionAttribute.Stars
+            : 0;
+
     /// <summary>
     /// Checks if a solution is implemented for the given puzzle
     /// </summary>
@@ -25,7 +30,7 @@ public static class SolutionProvider
         .Any(t => IsSolutionForPuzzle(t, year, day));
 
     /// <summary>
-    /// Get a instance of the solution for the given puzzle if it exists
+    /// Get an instance of the solution for the given puzzle if it exists
     /// </summary>
     /// <param name="year">Year of puzzle</param>
     /// <param name="day">Day of puzzle</param>
@@ -37,4 +42,14 @@ public static class SolutionProvider
 
         return solutionType is null ? null : Activator.CreateInstance(solutionType) as IAdventOfCodeSolution;
     }
+
+    /// <summary>
+    /// Get the number of collected stars for all puzzles with solutions.
+    /// </summary>
+    /// <returns><see langword="IReadOnlyDictionary"/> with <c>(Year, Day)</c> as key and number of stars as value for all found solutions.</returns>
+    public static IReadOnlyDictionary<(int Year, int Day), int> GetCollectedStars() => AllSolutionTypes
+        .Select(t => t.GetCustomAttribute<AdventOfCodeSolutionAttribute>())
+        .Where(t => t is not null)
+        .Cast<AdventOfCodeSolutionAttribute>()
+        .ToDictionary(s => (s.Year, s.Day), s => s.Stars);
 }
