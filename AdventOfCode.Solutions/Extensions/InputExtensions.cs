@@ -34,7 +34,7 @@ public static class InputExtensions
             .Rows()
             .Select(int.Parse)
             .ToList();
-        
+
         /// <summary>
         /// Split input by <see cref="Environment.NewLine"/> then parse each row as int
         /// <code>"123\n456\n789" => [123, 456, 789]</code>
@@ -126,5 +126,19 @@ public static class InputExtensions
             .Split(separator, StringSplitOptions.RemoveEmptyEntries)
             .Select(int.Parse)
             .ToList();
+
+        /// <summary>
+        /// Columns in split input by <see cref="Environment.NewLine"/>
+        /// <code>"qwer\nasdf\nzxcv" => ["qaz", "wsx", "edc", "rfv"]</code>
+        /// </summary>
+        /// <returns>List of all columns in the input</returns>
+        public List<string> Columns()
+        {
+            var rows = input.Rows();
+            return Enumerable.Range(0, rows[0].Length)
+                .Select(x => Enumerable.Range(0, rows.Count)
+                    .Select(y => rows[y][x]).JoinChars())
+                .ToList();
+        }
     }
 }
