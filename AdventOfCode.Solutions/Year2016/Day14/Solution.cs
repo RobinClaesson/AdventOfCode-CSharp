@@ -30,7 +30,7 @@ public partial class Solution : IAdventOfCodeSolution
             for (var i = 0; i < rounds; i++)
             {
                 var bytes = Utf8Encoding.GetBytes(hash);
-                hash = Md5Hash.ComputeHash(bytes).Select(b => b.ToString("x2")).JoinStrings();
+                hash = Md5Hash.ComputeHash(bytes).Select(b => b.ToString("x2")).JoinToString();
             }
 
             return hash;

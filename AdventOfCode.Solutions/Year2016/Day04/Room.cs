@@ -10,7 +10,7 @@ public record Room(string Name, int Id, string Checksum)
         .OrderByDescending(c => Name.Count(c2 => c == c2))
         .ThenBy(c => c)
         .Take(5)
-        .JoinChars() == Checksum;
+        .JoinToString() == Checksum;
 
     public Room WithDecryptedName()
     {

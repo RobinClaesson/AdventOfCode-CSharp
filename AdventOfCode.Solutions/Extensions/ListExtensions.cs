@@ -35,11 +35,9 @@ public static class ListExtensions
     {
         public List<List<T>> Permutations() => source.ToList().Permutations();
         public List<List<T>> Subsets(int? maxSize = null) => source.ToList().Subsets(maxSize);
+        public string JoinToString() => string.Join(string.Empty, source);
     }
 
     public static int Product(this List<int> list) => list.Aggregate(1, (acc, x) => acc * x);
     public static long Product(this List<long> list) => list.Aggregate(1L, (acc, x) => acc * x);
-    
-    public static string JoinChars(this IEnumerable<char> list) => string.Join(string.Empty, list);
-    public static string JoinStrings(this IEnumerable<string> list) => string.Join(string.Empty, list);
 }

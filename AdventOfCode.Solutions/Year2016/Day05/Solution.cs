@@ -38,7 +38,7 @@ public class Solution : IAdventOfCodeSolution
         }
 
         Output.Answer(password1);
-        Output.Answer(password2.JoinChars());
+        Output.Answer(password2.JoinToString());
         return;
 
         string CreateMd5Hash(int salt)

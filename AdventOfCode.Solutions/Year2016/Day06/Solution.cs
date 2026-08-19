@@ -10,12 +10,12 @@ public class Solution : IAdventOfCodeSolution
     {
         var mostCommon = input.Columns()
             .Select(r => r.OrderByDescending(c => r.Count(c2 => c == c2)).First())
-            .JoinChars();
+            .JoinToString();
         Output.Answer(mostCommon);
         
         var leastCommon = input.Columns()
             .Select(r => r.OrderBy(c => r.Count(c2 => c == c2)).First())
-            .JoinChars();
+            .JoinToString();
         Output.Answer(leastCommon);
     }
 }

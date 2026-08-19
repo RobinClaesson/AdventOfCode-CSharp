@@ -137,7 +137,7 @@ public static class InputExtensions
             var rows = input.Rows();
             return Enumerable.Range(0, rows[0].Length)
                 .Select(x => Enumerable.Range(0, rows.Count)
-                    .Select(y => rows[y][x]).JoinChars())
+                    .Select(y => rows[y][x]).JoinToString())
                 .ToList();
         }
     }
