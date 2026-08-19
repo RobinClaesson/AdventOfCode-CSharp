@@ -19,6 +19,14 @@ public static class PointExtensions
             new(point.X - 1, point.Y - 1),
         ];
 
+        public List<Point> GetManhattanNeighbors() =>
+        [
+            new(point.X, point.Y - 1),
+            new(point.X + 1, point.Y),
+            new(point.X, point.Y + 1),
+            new(point.X - 1, point.Y),
+        ];
+
         public Point Step(Direction direction, int steps = 1) => direction switch
         {
             Direction.Up => point with { Y = point.Y - steps },
