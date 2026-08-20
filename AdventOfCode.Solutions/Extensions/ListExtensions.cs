@@ -36,6 +36,11 @@ public static class ListExtensions
         public List<List<T>> Permutations() => source.ToList().Permutations();
         public List<List<T>> Subsets(int? maxSize = null) => source.ToList().Subsets(maxSize);
         public string JoinToString() => string.Join(string.Empty, source);
+
+        public T MostCommon() => source.GroupBy(t => t)
+            .OrderByDescending(grp => grp.Count())
+            .Select(grp => grp.Key)
+            .First();
     }
 
     public static int Product(this List<int> list) => list.Aggregate(1, (acc, x) => acc * x);
