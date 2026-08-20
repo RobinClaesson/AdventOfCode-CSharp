@@ -11,14 +11,13 @@ public partial class Solution : IAdventOfCodeSolution
         var discRegex = DiscRegex();
         var discs = discRegex.Matches(input)
             .Select(m => new Disc(
-                id: int.Parse(m.Groups["id"].Value),
-                positions: int.Parse(m.Groups["positions"].Value),
-                state: int.Parse(m.Groups["state"].Value)
+                Id: int.Parse(m.Groups["id"].Value),
+                Positions: int.Parse(m.Groups["positions"].Value),
+                State: int.Parse(m.Groups["state"].Value)
             )).ToList();
 
         Output.Answer(FindCapsuleDropTime(discs));
 
-        discs.ForEach(d => d.Reset());
         discs.Add(new Disc(7, 11, 0));
         Output.Answer(FindCapsuleDropTime(discs));
     }
@@ -26,9 +25,8 @@ public partial class Solution : IAdventOfCodeSolution
     private static int FindCapsuleDropTime(List<Disc> discs)
     {
         var time = 0;
-        while (discs.Any(d => !d.TimedForCapsule))
+        while (discs.Any(d => !d.TimedForCapsule(time)))
         {
-            discs.ForEach(d => d.Tick());
             time++;
         }
 
