@@ -24,6 +24,7 @@ public static class DirectionsExtensions
     {
         public Direction TurnRight() => (Direction)(((int)direction + 1) % 4);
         public Direction TurnLeft() => (Direction)(((int)direction + 3) % 4);
+        public Direction TurnAround() => (Direction)(((int)direction + 2) % 4);
     }
 
     extension(FlatTopHexagonDirection direction)
