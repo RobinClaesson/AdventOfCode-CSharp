@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Solutions", "A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.InputHandler", "AdventOfCode.InputHandler\AdventOfCode.InputHandler.csproj", "{806EE447-8F72-410D-8947-37A99E6C8D8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventOfCode.Tests", "AdventOfCode.Tests\AdventOfCode.Tests.csproj", "{F3E9CAB7-1A50-44D3-92EA-E2B5CB332355}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{806EE447-8F72-410D-8947-37A99E6C8D8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{806EE447-8F72-410D-8947-37A99E6C8D8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{806EE447-8F72-410D-8947-37A99E6C8D8F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3E9CAB7-1A50-44D3-92EA-E2B5CB332355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3E9CAB7-1A50-44D3-92EA-E2B5CB332355}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3E9CAB7-1A50-44D3-92EA-E2B5CB332355}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3E9CAB7-1A50-44D3-92EA-E2B5CB332355}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
