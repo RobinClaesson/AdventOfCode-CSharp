@@ -128,6 +128,16 @@ public static class InputExtensions
             .ToList();
 
         /// <summary>
+        /// Split input by the given separator and parses each entry as long
+        /// </summary>
+        /// <param name="separator">character to split the rows by</param>
+        /// <returns>List of longs from splitting the input then parsing them as long</returns>
+        public List<long> SplitAsLong(char separator) => input
+            .Split(separator, StringSplitOptions.RemoveEmptyEntries)
+            .Select(long.Parse)
+            .ToList();
+
+        /// <summary>
         /// Columns in split input by <see cref="Environment.NewLine"/>
         /// <code>"qwer\nasdf\nzxcv" => ["qaz", "wsx", "edc", "rfv"]</code>
         /// </summary>

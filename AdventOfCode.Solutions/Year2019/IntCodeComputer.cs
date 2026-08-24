@@ -1,35 +1,39 @@
-using System.Reflection.Emit;
-
 namespace AdventOfCode.Solutions.Year2019;
 
-public class IntCodeComputer(List<int> program)
+public class IntCodeComputer(List<long> program)
 {
-    private List<int> _program = program.ToList();
+    public IntCodeComputer(List<int> program) : this(program.Select(i => (long)i).ToList())
+    {
+    }
 
-    public int Ptr { get; private set; }
+    private Dictionary<long, long> _program = ResetProgram(program);
+
+    public long Ptr { get; private set; }
+    public long RelativeBase { get; set; }
     public bool Halted { get; private set; }
-    public int Input { get; set; }
-    public int Output { get; private set; }
+    public long Input { get; set; }
+    public long Output { get; private set; }
+    public List<long> Outputs { get; private set; } = [];
 
-    public int Noun
+    public long Noun
     {
         get => _program[1];
         set => _program[1] = value;
     }
 
-    public int Verb
+    public long Verb
     {
         get => _program[2];
         set => _program[2] = value;
     }
 
-    public int this[int i]
+    public long this[int i]
     {
         get => _program[i];
         set => _program[i] = value;
     }
 
-    public int Run()
+    public long Run()
     {
         while (!Halted)
             Process();
@@ -40,10 +44,16 @@ public class IntCodeComputer(List<int> program)
     public void Reset()
     {
         Ptr = 0;
+        RelativeBase = 0;
         Output = 0;
+        Outputs = [];
         Halted = false;
-        _program = program.ToList();
+        _program = ResetProgram(program);
     }
+
+    private static Dictionary<long, long> ResetProgram(List<long> program) => program
+        .Select((instruction, position) => (instruction, position))
+        .ToDictionary(x => (long)x.position, x => (long)x.instruction);
 
     public void Process()
     {
@@ -74,6 +84,9 @@ public class IntCodeComputer(List<int> program)
             case Opcode.Equal:
                 Compare(instruction, (a, b) => a == b);
                 break;
+            case Opcode.AdjustRelativeBase:
+                AdjustRelativeBase(instruction);
+                break;
             case Opcode.Halt:
                 Halted = true;
                 break;
@@ -81,25 +94,22 @@ public class IntCodeComputer(List<int> program)
             default:
                 throw new Exception($"Unknown opcode {instruction.Opcode}");
         }
-
-        if (Ptr >= _program.Count)
-        {
-            Halted = true;
-        }
     }
 
-    private void Arithmetic(IntCodeInstruction instruction, Func<int, int, int> operation)
+    private void Arithmetic(IntCodeInstruction instruction, Func<long, long, long> operation)
     {
         var a = GetParameterValue(instruction, 1);
         var b = GetParameterValue(instruction, 2);
-        var destination = GetParameter(3);
+        var destination = GetParameterAddress(instruction, 3);
+
         _program[destination] = operation(a, b);
         Ptr += 4;
     }
 
     private void LoadInput(IntCodeInstruction instruction)
     {
-        var destination = GetParameter(1);
+        var destination = GetParameterAddress(instruction, 1);
+
         _program[destination] = Input;
         Ptr += 2;
     }
@@ -107,10 +117,11 @@ public class IntCodeComputer(List<int> program)
     private void OutputValue(IntCodeInstruction instruction)
     {
         Output = GetParameterValue(instruction, 1);
+        Outputs.Add(Output);
         Ptr += 2;
     }
 
-    private void JumpIf(IntCodeInstruction instruction, Func<int, bool> condition)
+    private void JumpIf(IntCodeInstruction instruction, Func<long, bool> condition)
     {
         var value = GetParameterValue(instruction, 1);
         if (condition(value))
@@ -119,38 +130,46 @@ public class IntCodeComputer(List<int> program)
             Ptr += 3;
     }
 
-    private void Compare(IntCodeInstruction instruction, Func<int, int, bool> condition)
+    private void Compare(IntCodeInstruction instruction, Func<long, long, bool> condition)
     {
         var a = GetParameterValue(instruction, 1);
         var b = GetParameterValue(instruction, 2);
-        var destination = GetParameter(3);
+        var destination = GetParameterAddress(instruction, 3);
+
         _program[destination] = condition(a, b) ? 1 : 0;
         Ptr += 4;
     }
 
-    public IntCodeInstruction GetCurrentInstruction()
+    private void AdjustRelativeBase(IntCodeInstruction instruction)
     {
-        var instruction = _program[Ptr];
-
-        return new IntCodeInstruction(
-            Instruction: instruction,
-            Opcode: (Opcode)(instruction % 100),
-            ParameterModes:
-            [
-                (ParameterMode)((instruction / 100) & 1),
-                (ParameterMode)((instruction / 1000) & 1),
-                (ParameterMode)((instruction / 10000) & 1)
-            ]
-        );
+        RelativeBase += GetParameterValue(instruction, 1);
+        Ptr += 2;
     }
 
-    public int GetParameterValue(IntCodeInstruction instruction, int parameter) =>
+    public IntCodeInstruction GetCurrentInstruction() => IntCodeInstruction.Parse(_program[Ptr]);
+
+
+    public long GetParameterValue(IntCodeInstruction instruction, int parameter) =>
         instruction.ParameterModes[parameter - 1] switch
         {
-            ParameterMode.Position => _program[_program[Ptr + parameter]],
-            ParameterMode.Immediate => _program[Ptr + parameter],
-            _ => throw new Exception($"Unknown parameter mode {instruction.ParameterModes[parameter]}")
+            ParameterMode.Position or ParameterMode.Relative =>
+                GetProgramValue(GetParameterAddress(instruction, parameter)),
+            ParameterMode.Immediate => GetProgramValue(Ptr + parameter),
+
+            _ => throw new Exception($"Unknown parameter mode {instruction.ParameterModes[parameter - 1]}")
         };
 
-    public int GetParameter(int parameter) => _program[Ptr + parameter];
+    public long GetParameterAddress(IntCodeInstruction instruction, int parameter) =>
+        instruction.ParameterModes[parameter - 1] switch
+        {
+            ParameterMode.Position => GetParameter(parameter),
+            ParameterMode.Relative => RelativeBase + GetParameter(parameter),
+
+            _ => throw new Exception(
+                $"Invalid write parameter mode: {instruction.ParameterModes[parameter - 1]}")
+        };
+
+    public long GetParameter(int parameter) => _program.GetValueOrDefault(Ptr + parameter, 0);
+
+    public long GetProgramValue(long position) => _program.GetValueOrDefault(position, 0);
 }
