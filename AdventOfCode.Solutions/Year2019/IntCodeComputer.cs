@@ -33,9 +33,9 @@ public class IntCodeComputer(List<long> program)
         set => _program[i] = value;
     }
 
-    public long Run()
+    public long Run(Func<bool>? pauseCondition = null)
     {
-        while (!Halted)
+        while (!Halted && (pauseCondition is null || !pauseCondition()))
             Process();
 
         return _program[0];

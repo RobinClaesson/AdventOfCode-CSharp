@@ -266,4 +266,19 @@ public class IntCodeComputerTests
 
         Assert.Equivalent(expected, result);
     }
+
+    [Fact]
+    public void Run_PauseCondition()
+    {
+        var computer = new IntCodeComputer([104, 1, 104, 2, 104, 3, 104, 4, 99]);
+
+        computer.Run(() => computer.Outputs.Count == 1);
+        Assert.Single(computer.Outputs);
+
+        computer.Run(() => computer.Outputs.Count == 3);
+        Assert.Equal(3, computer.Outputs.Count);
+
+        computer.Run();
+        Assert.Equal(4, computer.Outputs.Count);
+    }
 }
