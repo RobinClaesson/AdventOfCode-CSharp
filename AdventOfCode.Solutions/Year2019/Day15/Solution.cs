@@ -15,8 +15,31 @@ public class Solution : IAdventOfCodeSolution
         var commandSequences = new Queue<List<Command>>();
         Enum.GetValues<Command>().ToList().ForEach(command => commandSequences.Enqueue([command]));
 
+        var oxygenSystemPosition = Point.Empty;
         int? pathLength = null;
         while (commandSequences.Count > 0)
+        {
+            SearchCommandSequence();
+        }
+
+        Output.Answer(pathLength);
+
+        var minutes = 1;
+        var lastReached = oxygenSystemPosition
+            .GetManhattanNeighbors()
+            .Where(p => visited.Contains(p))
+            .ToList();
+        var hasOxygen = lastReached.ToHashSet();
+
+        while (hasOxygen.Count < visited.Count)
+        {
+            SpreadOxygen();
+        }
+
+        Output.Answer(minutes);
+        return;
+
+        void SearchCommandSequence()
         {
             computer.Reset();
             var commands = commandSequences.Dequeue();
@@ -40,11 +63,20 @@ public class Solution : IAdventOfCodeSolution
                     break;
                 case 2 when pathLength is null:
                     pathLength = commands.Count;
+                    oxygenSystemPosition = GetFinalPosition(commands);
                     break;
             }
         }
 
-        Output.Answer(pathLength);
+        void SpreadOxygen()
+        {
+            lastReached = lastReached.SelectMany(p => p.GetManhattanNeighbors())
+                .Where(p => visited.Contains(p) && !hasOxygen.Contains(p))
+                .ToList();
+
+            lastReached.ForEach(p => hasOxygen.Add(p));
+            minutes++;
+        }
     }
 
     private static Point Step(Point position, Command command) => command switch
